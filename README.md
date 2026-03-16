@@ -1,9 +1,10 @@
 # Application Tracker System
 
-A Python-based system that automates the matching of job applications to job requirements, ranks candidates, and sends notifications based on match scores.
+A Python-based system that automates the matching of job applications to job requirements, ranks candidates, and sends notifications based on match scores. Includes a **Flask web UI** for a full browser-based experience as well as a CLI.
 
 ## Features
 
+- **Web UI** — Browser-based dashboard, job listings, applicant table, application form, and match results (Flask + Bootstrap 5)
 - **Skill-based matching** — Compares candidate skills against required and preferred job skills with weighted scoring
 - **Experience matching** — Factors in years of experience against job requirements
 - **Candidate ranking** — Ranks multiple applicants for a single job best-first
@@ -16,6 +17,7 @@ A Python-based system that automates the matching of job applications to job req
 
 ```
 application-tracker-system/
+├── app.py                     # Flask web application
 ├── main.py                    # CLI entry point
 ├── config.json                # Configuration (thresholds, notification settings)
 ├── requirements.txt           # Python dependencies
@@ -26,6 +28,17 @@ application-tracker-system/
 │   ├── notifier.py            # Notification module
 │   ├── logger.py              # File-based rotating logger
 │   └── tracker.py             # Orchestration layer
+├── templates/                 # Jinja2 HTML templates
+│   ├── base.html              # Shared layout (navbar, footer)
+│   ├── index.html             # Dashboard
+│   ├── jobs.html              # Job listings
+│   ├── job_detail.html        # Single job + ranked applicants
+│   ├── new_job.html           # Post a new job
+│   ├── applications.html      # Application list
+│   ├── apply.html             # Submit application form
+│   └── results.html           # All match results with filter
+├── static/
+│   └── style.css              # Custom styles
 ├── data/
 │   ├── job_requirements.json  # Sample job postings
 │   ├── applications.json      # Sample applications
@@ -52,7 +65,25 @@ cd application-tracker-system
 pip install -r requirements.txt
 ```
 
-### 3. Run the tracker
+### 3. Run the web UI
+
+```bash
+python app.py
+```
+
+Then open **http://localhost:5000** in your browser.
+
+| Page | URL | Description |
+|---|---|---|
+| Dashboard | `/` | Stats overview + best match per applicant |
+| Jobs | `/jobs` | All open positions (card grid) |
+| Job Detail | `/jobs/<id>` | Job info + ranked applicants |
+| Post a Job | `/jobs/new` | Form to add a new job posting |
+| Applications | `/applications` | All applications table |
+| Apply | `/applications/new` | Submit a new application |
+| Results | `/results` | Full match matrix with status filter |
+
+### 4. (Optional) Run the CLI
 
 ```bash
 # Process all applications against all jobs (with notifications)

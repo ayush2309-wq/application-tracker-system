@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Submit Application — Application Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('applications') }}">Applications</a></li>
+        <li class="breadcrumb-item active">Submit Application</li>
+      </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h4 class="mb-0 fw-bold">
+          <i class="bi bi-send me-2 text-primary"></i>Submit Your Application
+        </h4>
+        <p class="text-muted mb-0 small mt-1">Fill in your details and we'll match you to the best roles automatically.</p>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('new_application') }}" novalidate>
+          <!-- Personal details -->
+          <h6 class="text-uppercase text-muted small fw-semibold mb-3 border-bottom pb-2">Personal Details</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+              <label class="form-label fw-medium" for="applicant_name">Full Name <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                id="applicant_name"
+                name="applicant_name"
+                placeholder="e.g. Jane Doe"
+                required
+              />
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-medium" for="email">Email Address <span class="text-danger">*</span></label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="jane@example.com"
+                required
+              />
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-medium" for="location">Location</label>
+              <input
+                type="text"
+                class="form-control"
+                id="location"
+                name="location"
+                placeholder="e.g. Remote, New York, NY"
+              />
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-medium" for="experience_years">Years of Experience <span class="text-danger">*</span></label>
+              <input
+                type="number"
+                class="form-control"
+                id="experience_years"
+                name="experience_years"
+                min="0"
+                max="50"
+                placeholder="e.g. 3"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <h6 class="text-uppercase text-muted small fw-semibold mb-3 border-bottom pb-2">Skills</h6>
+          <div class="mb-4">
+            <label class="form-label fw-medium" for="skills">Skills <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              id="skills"
+              name="skills"
+              placeholder="e.g. python, django, docker, sql"
+              required
+            />
+            <div class="form-text">Enter skills separated by commas. Matching is case-insensitive.</div>
+
+            <!-- Live skill preview -->
+            <div id="skill-preview" class="mt-2 d-flex flex-wrap gap-1"></div>
+          </div>
+
+          <!-- Resume summary -->
+          <h6 class="text-uppercase text-muted small fw-semibold mb-3 border-bottom pb-2">Resume Summary</h6>
+          <div class="mb-4">
+            <label class="form-label fw-medium" for="resume_summary">Brief Summary</label>
+            <textarea
+              class="form-control"
+              id="resume_summary"
+              name="resume_summary"
+              rows="4"
+              placeholder="Describe your background, key achievements, and what you're looking for…"
+            ></textarea>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary px-4">
+              <i class="bi bi-send me-1"></i>Submit Application
+            </button>
+            <a href="{{ url_for('applications') }}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Open jobs hint -->
+    <div class="card border-0 shadow-sm mt-4">
+      <div class="card-header bg-white py-3">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-briefcase me-2 text-primary"></i>Open Positions</h6>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for job in jobs %}
+        <li class="list-group-item d-flex align-items-center justify-content-between py-2">
+          <div>
+            <span class="fw-medium">{{ job.title }}</span>
+            <span class="text-muted small ms-2">— {{ job.company }}</span>
+          </div>
+          <a href="{{ url_for('job_detail', job_id=job.job_id) }}" class="btn btn-sm btn-outline-primary">
+            View
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const skillsInput = document.getElementById('skills');
+  const preview = document.getElementById('skill-preview');
+
+  function renderSkills() {
+    const raw = skillsInput.value;
+    const skills = raw.split(',').map(s => s.trim()).filter(Boolean);
+    preview.innerHTML = skills
+      .map(s => `<span class="badge bg-primary-subtle text-primary">${s}</span>`)
+      .join('');
+  }
+
+  skillsInput.addEventListener('input', renderSkills);
+</script>
+{% endblock %}
