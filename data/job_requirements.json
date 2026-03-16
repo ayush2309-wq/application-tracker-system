@@ -1,0 +1,46 @@
+[
+  {
+    "job_id": "JOB001",
+    "title": "Python Backend Developer",
+    "company": "TechCorp Inc.",
+    "required_skills": ["python", "django", "rest api", "sql"],
+    "preferred_skills": ["docker", "aws", "redis"],
+    "min_experience_years": 2,
+    "location": "Remote",
+    "description": "Build and maintain scalable backend services using Python and Django.",
+    "posted_date": "2026-03-10"
+  },
+  {
+    "job_id": "JOB002",
+    "title": "Data Scientist",
+    "company": "DataViz Analytics",
+    "required_skills": ["python", "machine learning", "pandas", "numpy"],
+    "preferred_skills": ["tensorflow", "spark", "sql"],
+    "min_experience_years": 3,
+    "location": "New York, NY",
+    "description": "Develop ML models and data pipelines to drive business insights.",
+    "posted_date": "2026-03-12"
+  },
+  {
+    "job_id": "JOB003",
+    "title": "Full Stack Developer",
+    "company": "StartupHub",
+    "required_skills": ["javascript", "react", "node.js", "mongodb"],
+    "preferred_skills": ["typescript", "graphql", "docker"],
+    "min_experience_years": 1,
+    "location": "San Francisco, CA",
+    "description": "Build end-to-end features for a fast-growing SaaS platform.",
+    "posted_date": "2026-03-14"
+  },
+  {
+    "job_id": "JOB004",
+    "title": "DevOps Engineer",
+    "company": "CloudScale Systems",
+    "required_skills": ["docker", "kubernetes", "ci/cd", "linux"],
+    "preferred_skills": ["terraform", "aws", "python"],
+    "min_experience_years": 3,
+    "location": "Austin, TX",
+    "description": "Design and maintain cloud infrastructure and deployment pipelines.",
+    "posted_date": "2026-03-15"
+  }
+]

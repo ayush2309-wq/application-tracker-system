@@ -1,0 +1,14 @@
+{
+  "accept_threshold": 0.70,
+  "waitlist_threshold": 0.45,
+  "notifications": {
+    "console": true,
+    "email": false
+  },
+  "log_level": "INFO",
+  "data": {
+    "job_requirements_file": "data/job_requirements.json",
+    "applications_file": "data/applications.json",
+    "results_file": "data/results.json"
+  }
+}
