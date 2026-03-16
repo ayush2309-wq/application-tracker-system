@@ -1,0 +1,74 @@
+[
+  {
+    "application_id": "A001",
+    "job_id": "J001",
+    "candidate_name": "Alice Johnson",
+    "email": "alice@example.com",
+    "technologies": ["Python", "Django", "PostgreSQL", "Redis"],
+    "keywords": ["REST API", "microservices", "Docker"],
+    "experience_years": 3
+  },
+  {
+    "application_id": "A002",
+    "job_id": "J001",
+    "candidate_name": "Bob Smith",
+    "email": "bob@example.com",
+    "technologies": ["Python", "Flask"],
+    "keywords": ["REST API"],
+    "experience_years": 1
+  },
+  {
+    "application_id": "A003",
+    "job_id": "J002",
+    "candidate_name": "Carol White",
+    "email": "carol@example.com",
+    "technologies": ["JavaScript", "React", "CSS", "TypeScript"],
+    "keywords": ["responsive design", "component architecture", "accessibility"],
+    "experience_years": 2
+  },
+  {
+    "application_id": "A004",
+    "job_id": "J002",
+    "candidate_name": "David Brown",
+    "email": "david@example.com",
+    "technologies": ["JavaScript", "Vue.js"],
+    "keywords": ["responsive design"],
+    "experience_years": 1
+  },
+  {
+    "application_id": "A005",
+    "job_id": "J003",
+    "candidate_name": "Eva Martinez",
+    "email": "eva@example.com",
+    "technologies": ["Python", "Spark", "SQL", "Airflow"],
+    "keywords": ["ETL", "data pipeline", "streaming"],
+    "experience_years": 4
+  },
+  {
+    "application_id": "A006",
+    "job_id": "J003",
+    "candidate_name": "Frank Lee",
+    "email": "frank@example.com",
+    "technologies": ["Python", "SQL"],
+    "keywords": ["ETL"],
+    "experience_years": 2
+  },
+  {
+    "application_id": "A007",
+    "job_id": "J004",
+    "candidate_name": "Grace Kim",
+    "email": "grace@example.com",
+    "technologies": ["Docker", "Kubernetes", "Linux", "Terraform"],
+    "keywords": ["CI/CD", "infrastructure as code"],
+    "experience_years": 3
+  },
+  {
+    "application_id": "A008",
+    "job_id": "J004",
+    "candidate_name": "Henry Chen",
+    "email": "henry@example.com",
+    "technologies": ["Docker", "Linux"],
+    "keywords": ["CI/CD"],
+    "experience_years": 1
+  }
+]
