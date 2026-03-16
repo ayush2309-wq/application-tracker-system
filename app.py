@@ -232,8 +232,78 @@ def run_matching():
 
 
 # ---------------------------------------------------------------------------
+# API – machine-readable output
+# ---------------------------------------------------------------------------
+
+@app.route("/api/results")
+def api_results():
+    """Return all match results as JSON (full backend output)."""
+    jobs = _load_jobs()
+    applications = _load_apps()
+    results = process_applications(applications, jobs, notify=False)
+    payload = [
+        {
+            "application_id": r.application_id,
+            "job_id": r.job_id,
+            "applicant_name": r.applicant_name,
+            "job_title": r.job_title,
+            "company": r.company,
+            "match_score": r.match_score,
+            "status": r.status,
+            "score_breakdown": {
+                "required_skills": {
+                    "score": r.req_score,
+                    "weight": 0.60,
+                    "weighted": round(r.req_score * 0.60, 4),
+                    "matched": r.matched_skills,
+                    "missing": r.missing_skills,
+                },
+                "preferred_skills": {
+                    "score": r.pref_score,
+                    "weight": 0.20,
+                    "weighted": round(r.pref_score * 0.20, 4),
+                    "matched": r.preferred_matched,
+                    "missing": r.preferred_missing,
+                },
+                "experience": {
+                    "score": r.exp_score,
+                    "weight": 0.20,
+                    "weighted": round(r.exp_score * 0.20, 4),
+                },
+            },
+        }
+        for r in results
+    ]
+    return jsonify(payload)
+
+
+@app.route("/api/jobs")
+def api_jobs():
+    """Return all job postings as JSON."""
+    jobs = _load_jobs()
+    return jsonify([j.__dict__ for j in jobs])
+
+
+@app.route("/api/applications")
+def api_applications():
+    """Return all applications as JSON."""
+    apps = _load_apps()
+    return jsonify([a.__dict__ for a in apps])
+
+
+# ---------------------------------------------------------------------------
+# About / Tech Stack
+# ---------------------------------------------------------------------------
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    debug_mode = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+    app.run(debug=debug_mode, host="0.0.0.0", port=5000)

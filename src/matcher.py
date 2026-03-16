@@ -13,6 +13,11 @@ from .models import Application, JobRequirement, MatchResult
 ACCEPT_THRESHOLD = 0.70
 WAITLIST_THRESHOLD = 0.45
 
+# Score weights
+WEIGHT_REQUIRED = 0.60
+WEIGHT_PREFERRED = 0.20
+WEIGHT_EXPERIENCE = 0.20
+
 
 def _skill_overlap(candidate_skills: List[str], job_skills: List[str]) -> Tuple[List[str], List[str]]:
     """Return (matched_skills, missing_skills) comparing lower-cased sets."""
@@ -23,6 +28,33 @@ def _skill_overlap(candidate_skills: List[str], job_skills: List[str]) -> Tuple[
     return matched, missing
 
 
+def _component_scores(application: Application, job: JobRequirement):
+    """
+    Compute per-component scores and skill details for one application/job pair.
+
+    Returns a tuple:
+      (req_matched, req_missing, req_score,
+       pref_matched, pref_missing, pref_score,
+       exp_score)
+    """
+    req_matched, req_missing = _skill_overlap(application.skills, job.required_skills)
+    req_score = len(req_matched) / len(job.required_skills) if job.required_skills else 1.0
+
+    if job.preferred_skills:
+        pref_matched, pref_missing = _skill_overlap(application.skills, job.preferred_skills)
+        pref_score = len(pref_matched) / len(job.preferred_skills)
+    else:
+        pref_matched, pref_missing = [], []
+        pref_score = 1.0
+
+    if job.min_experience_years > 0:
+        exp_score = min(application.experience_years / job.min_experience_years, 1.0)
+    else:
+        exp_score = 1.0
+
+    return req_matched, req_missing, req_score, pref_matched, pref_missing, pref_score, exp_score
+
+
 def compute_match_score(application: Application, job: JobRequirement) -> float:
     """
     Calculate a match score in [0, 1] based on:
@@ -30,24 +62,13 @@ def compute_match_score(application: Application, job: JobRequirement) -> float:
       - Preferred skills coverage (20 % weight)
       - Experience adequacy       (20 % weight)
     """
-    # Required skills
-    req_matched, _ = _skill_overlap(application.skills, job.required_skills)
-    req_score = len(req_matched) / len(job.required_skills) if job.required_skills else 1.0
-
-    # Preferred skills
-    if job.preferred_skills:
-        pref_matched, _ = _skill_overlap(application.skills, job.preferred_skills)
-        pref_score = len(pref_matched) / len(job.preferred_skills)
-    else:
-        pref_score = 1.0
-
-    # Experience
-    if job.min_experience_years > 0:
-        exp_score = min(application.experience_years / job.min_experience_years, 1.0)
-    else:
-        exp_score = 1.0
-
-    return round(0.60 * req_score + 0.20 * pref_score + 0.20 * exp_score, 4)
+    _, _, req_score, _, _, pref_score, exp_score = _component_scores(application, job)
+    return round(
+        WEIGHT_REQUIRED * req_score
+        + WEIGHT_PREFERRED * pref_score
+        + WEIGHT_EXPERIENCE * exp_score,
+        4,
+    )
 
 
 def determine_status(score: float) -> str:
@@ -68,9 +89,17 @@ def match_application(application: Application, jobs: List[JobRequirement]) -> L
     results: List[MatchResult] = []
 
     for job in jobs:
-        score = compute_match_score(application, job)
-        matched_skills, missing_skills = _skill_overlap(application.skills, job.required_skills)
-        status = determine_status(score)
+        (req_matched, req_missing, req_score,
+         pref_matched, pref_missing, pref_score,
+         exp_score) = _component_scores(application, job)
+
+        match_score = round(
+            WEIGHT_REQUIRED * req_score
+            + WEIGHT_PREFERRED * pref_score
+            + WEIGHT_EXPERIENCE * exp_score,
+            4,
+        )
+        status = determine_status(match_score)
 
         results.append(
             MatchResult(
@@ -79,10 +108,15 @@ def match_application(application: Application, jobs: List[JobRequirement]) -> L
                 applicant_name=application.applicant_name,
                 job_title=job.title,
                 company=job.company,
-                match_score=score,
-                matched_skills=matched_skills,
-                missing_skills=missing_skills,
+                match_score=match_score,
+                matched_skills=req_matched,
+                missing_skills=req_missing,
                 status=status,
+                req_score=round(req_score, 4),
+                pref_score=round(pref_score, 4),
+                exp_score=round(exp_score, 4),
+                preferred_matched=pref_matched,
+                preferred_missing=pref_missing,
             )
         )
 
@@ -99,9 +133,17 @@ def rank_applications(applications: List[Application], job: JobRequirement) -> L
     results: List[MatchResult] = []
 
     for app in applications:
-        score = compute_match_score(app, job)
-        matched_skills, missing_skills = _skill_overlap(app.skills, job.required_skills)
-        status = determine_status(score)
+        (req_matched, req_missing, req_score,
+         pref_matched, pref_missing, pref_score,
+         exp_score) = _component_scores(app, job)
+
+        match_score = round(
+            WEIGHT_REQUIRED * req_score
+            + WEIGHT_PREFERRED * pref_score
+            + WEIGHT_EXPERIENCE * exp_score,
+            4,
+        )
+        status = determine_status(match_score)
 
         results.append(
             MatchResult(
@@ -110,10 +152,15 @@ def rank_applications(applications: List[Application], job: JobRequirement) -> L
                 applicant_name=app.applicant_name,
                 job_title=job.title,
                 company=job.company,
-                match_score=score,
-                matched_skills=matched_skills,
-                missing_skills=missing_skills,
+                match_score=match_score,
+                matched_skills=req_matched,
+                missing_skills=req_missing,
                 status=status,
+                req_score=round(req_score, 4),
+                pref_score=round(pref_score, 4),
+                exp_score=round(exp_score, 4),
+                preferred_matched=pref_matched,
+                preferred_missing=pref_missing,
             )
         )
 

@@ -73,9 +73,20 @@
               <tr>
                 <th class="ps-3">#</th>
                 <th>Applicant</th>
-                <th class="text-center">Score</th>
-                <th>Matched Skills</th>
-                <th>Missing Skills</th>
+                <th class="text-center" style="min-width:90px">
+                  Total<br/><span class="text-muted fw-normal" style="font-size:0.65rem">100%</span>
+                </th>
+                <th class="text-center" style="min-width:90px">
+                  Required<br/><span class="text-muted fw-normal" style="font-size:0.65rem">60%</span>
+                </th>
+                <th class="text-center" style="min-width:90px">
+                  Preferred<br/><span class="text-muted fw-normal" style="font-size:0.65rem">20%</span>
+                </th>
+                <th class="text-center" style="min-width:90px">
+                  Experience<br/><span class="text-muted fw-normal" style="font-size:0.65rem">20%</span>
+                </th>
+                <th>Required Skills</th>
+                <th>Preferred Skills</th>
                 <th class="text-center">Status</th>
               </tr>
             </thead>
@@ -84,25 +95,57 @@
               <tr>
                 <td class="ps-3 text-muted fw-medium">{{ loop.index }}</td>
                 <td class="fw-medium">{{ r.applicant_name }}</td>
+                <!-- Total -->
                 <td class="text-center">
-                  <div class="score-bar-wrap">
+                  <div class="score-bar-wrap mx-auto">
                     <div class="score-bar bg-{{ status_badge(r.status) }}" style="width:{{ (r.match_score * 100)|int }}%"></div>
-                    <span class="score-label">{{ "%.0f"|format(r.match_score * 100) }}%</span>
+                    <span class="score-label fw-bold">{{ "%.0f"|format(r.match_score * 100) }}%</span>
                   </div>
                 </td>
+                <!-- Required -->
+                <td class="text-center">
+                  <div class="score-bar-wrap mx-auto">
+                    <div class="score-bar bg-danger" style="width:{{ (r.req_score * 100)|int }}%; opacity:0.65"></div>
+                    <span class="score-label">{{ "%.0f"|format(r.req_score * 100) }}%</span>
+                  </div>
+                </td>
+                <!-- Preferred -->
+                <td class="text-center">
+                  <div class="score-bar-wrap mx-auto">
+                    <div class="score-bar bg-secondary" style="width:{{ (r.pref_score * 100)|int }}%; opacity:0.65"></div>
+                    <span class="score-label">{{ "%.0f"|format(r.pref_score * 100) }}%</span>
+                  </div>
+                </td>
+                <!-- Experience -->
+                <td class="text-center">
+                  <div class="score-bar-wrap mx-auto">
+                    <div class="score-bar bg-info" style="width:{{ (r.exp_score * 100)|int }}%; opacity:0.65"></div>
+                    <span class="score-label">{{ "%.0f"|format(r.exp_score * 100) }}%</span>
+                  </div>
+                </td>
+                <!-- Required skill detail -->
                 <td>
                   {% for s in r.matched_skills %}
                     <span class="badge bg-success-subtle text-success me-1">{{ s }}</span>
-                  {% else %}
-                    <span class="text-muted small">—</span>
                   {% endfor %}
-                </td>
-                <td>
                   {% for s in r.missing_skills %}
-                    <span class="badge bg-danger-subtle text-danger me-1">{{ s }}</span>
-                  {% else %}
-                    <span class="text-muted small">—</span>
+                    <span class="badge bg-danger-subtle text-danger me-1"><s>{{ s }}</s></span>
                   {% endfor %}
+                  {% if not r.matched_skills and not r.missing_skills %}
+                    <span class="text-muted small">—</span>
+                  {% endif %}
+                </td>
+                <!-- Preferred skill detail -->
+                <td>
+                  {% for s in r.preferred_matched %}
+                    <span class="badge bg-success-subtle text-success me-1">{{ s }}</span>
+                  {% endfor %}
+                  {% for s in r.preferred_missing %}
+                    <span class="badge bg-secondary-subtle text-secondary me-1"><s>{{ s }}</s></span>
+                  {% endfor %}
+                  {% if not r.preferred_matched and not r.preferred_missing %}
+                    <span class="text-muted small">—</span>
+                  {% endif %}
                 </td>
                 <td class="text-center">
                   <span class="badge bg-{{ status_badge(r.status) }}">{{ r.status|capitalize }}</span>
@@ -110,7 +153,7 @@
               </tr>
               {% else %}
               <tr>
-                <td colspan="6" class="text-center text-muted py-4">No applicants yet.</td>
+                <td colspan="9" class="text-center text-muted py-4">No applicants yet.</td>
               </tr>
               {% endfor %}
             </tbody>

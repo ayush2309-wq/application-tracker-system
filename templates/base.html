@@ -53,6 +53,12 @@
             <i class="bi bi-bar-chart me-1"></i>Results
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'about' %}active{% endif %}"
+             href="{{ url_for('about') }}">
+            <i class="bi bi-info-circle me-1"></i>About
+          </a>
+        </li>
         <li class="nav-item ms-lg-3">
           <a class="btn btn-light btn-sm" href="{{ url_for('new_application') }}">
             <i class="bi bi-plus-circle me-1"></i>Apply Now
