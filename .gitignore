@@ -1,0 +1,22 @@
+# Python byte-compiled / optimised files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Log files (generated at runtime – do not commit history)
+logs/tracker.log
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Editor directories
+.idea/
+.vscode/
+*.swp

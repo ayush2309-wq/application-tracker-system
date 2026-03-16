@@ -1,0 +1,30 @@
+[
+  {
+    "job_id": "J001",
+    "title": "Backend Developer",
+    "required_technologies": ["Python", "Django", "PostgreSQL"],
+    "required_keywords": ["REST API", "microservices"],
+    "min_experience_years": 2
+  },
+  {
+    "job_id": "J002",
+    "title": "Frontend Developer",
+    "required_technologies": ["JavaScript", "React", "CSS"],
+    "required_keywords": ["responsive design", "component architecture"],
+    "min_experience_years": 1
+  },
+  {
+    "job_id": "J003",
+    "title": "Data Engineer",
+    "required_technologies": ["Python", "Spark", "SQL"],
+    "required_keywords": ["ETL", "data pipeline"],
+    "min_experience_years": 3
+  },
+  {
+    "job_id": "J004",
+    "title": "DevOps Engineer",
+    "required_technologies": ["Docker", "Kubernetes", "Linux"],
+    "required_keywords": ["CI/CD", "infrastructure as code"],
+    "min_experience_years": 2
+  }
+]
