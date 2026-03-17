@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Application Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="fw-bold mb-0"><i class="bi bi-speedometer2 me-2 text-primary"></i>Dashboard</h2>
+    <p class="text-muted mb-0">Overview of all jobs, applications and match results</p>
+  </div>
+  <a href="{{ url_for('new_application') }}" class="btn btn-primary">
+    <i class="bi bi-plus-circle me-1"></i>New Application
+  </a>
+</div>
+
+<!-- Stat cards -->
+<div class="row g-3 mb-5">
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card stat-card h-100 border-0 shadow-sm text-center">
+      <div class="card-body">
+        <div class="stat-icon bg-primary-subtle text-primary mb-2">
+          <i class="bi bi-briefcase-fill"></i>
+        </div>
+        <div class="stat-value">{{ stats.total_jobs }}</div>
+        <div class="stat-label">Jobs</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card stat-card h-100 border-0 shadow-sm text-center">
+      <div class="card-body">
+        <div class="stat-icon bg-info-subtle text-info mb-2">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="stat-value">{{ stats.total_applications }}</div>
+        <div class="stat-label">Applicants</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card stat-card h-100 border-0 shadow-sm text-center">
+      <div class="card-body">
+        <div class="stat-icon bg-success-subtle text-success mb-2">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="stat-value">{{ stats.accepted }}</div>
+        <div class="stat-label">Accepted</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card stat-card h-100 border-0 shadow-sm text-center">
+      <div class="card-body">
+        <div class="stat-icon bg-warning-subtle text-warning mb-2">
+          <i class="bi bi-clock-fill"></i>
+        </div>
+        <div class="stat-value">{{ stats.waitlisted }}</div>
+        <div class="stat-label">Waitlisted</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card stat-card h-100 border-0 shadow-sm text-center">
+      <div class="card-body">
+        <div class="stat-icon bg-danger-subtle text-danger mb-2">
+          <i class="bi bi-x-circle-fill"></i>
+        </div>
+        <div class="stat-value">{{ stats.rejected }}</div>
+        <div class="stat-label">Rejected</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card stat-card h-100 border-0 shadow-sm text-center">
+      <div class="card-body">
+        <div class="stat-icon bg-secondary-subtle text-secondary mb-2">
+          <i class="bi bi-graph-up"></i>
+        </div>
+        <div class="stat-value">
+          {% if stats.total_applications > 0 %}
+            {{ "%.0f"|format(stats.accepted / stats.total_applications * 100) }}%
+          {% else %}0%{% endif %}
+        </div>
+        <div class="stat-label">Acceptance Rate</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Top matches summary -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between py-3">
+    <h5 class="mb-0 fw-semibold"><i class="bi bi-star me-2 text-warning"></i>Best Match per Applicant</h5>
+    <a href="{{ url_for('results') }}" class="btn btn-sm btn-outline-primary">View All Results</a>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Applicant</th>
+            <th>Best Job Match</th>
+            <th>Company</th>
+            <th class="text-center">Score</th>
+            <th class="text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in results %}
+          <tr>
+            <td class="fw-medium">{{ r.applicant_name }}</td>
+            <td>
+              <a href="{{ url_for('job_detail', job_id=r.job_id) }}" class="text-decoration-none">
+                {{ r.job_title }}
+              </a>
+            </td>
+            <td class="text-muted">{{ r.company }}</td>
+            <td class="text-center">
+              <div class="score-bar-wrap">
+                <div class="score-bar bg-{{ status_badge(r.status) }}" style="width:{{ (r.match_score * 100)|int }}%"></div>
+                <span class="score-label">{{ "%.0f"|format(r.match_score * 100) }}%</span>
+              </div>
+            </td>
+            <td class="text-center">
+              <span class="badge bg-{{ status_badge(r.status) }}">{{ r.status|capitalize }}</span>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" class="text-center text-muted py-4">No applications yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Active jobs -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between py-3">
+    <h5 class="mb-0 fw-semibold"><i class="bi bi-briefcase me-2 text-primary"></i>Open Positions</h5>
+    <div>
+      <a href="{{ url_for('new_job') }}" class="btn btn-sm btn-outline-secondary me-2">
+        <i class="bi bi-plus me-1"></i>Post Job
+      </a>
+      <a href="{{ url_for('jobs') }}" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Min. Experience</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for job in jobs %}
+          <tr>
+            <td class="fw-medium">{{ job.title }}</td>
+            <td>{{ job.company }}</td>
+            <td><i class="bi bi-geo-alt text-muted me-1"></i>{{ job.location }}</td>
+            <td>{{ job.min_experience_years }} yr{% if job.min_experience_years != 1 %}s{% endif %}</td>
+            <td class="text-end">
+              <a href="{{ url_for('job_detail', job_id=job.job_id) }}" class="btn btn-sm btn-outline-primary">
+                View
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

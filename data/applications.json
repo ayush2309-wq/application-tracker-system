@@ -1,0 +1,96 @@
+[
+  {
+    "application_id": "APP001",
+    "applicant_name": "Alice Johnson",
+    "email": "alice@example.com",
+    "skills": [
+      "python",
+      "django",
+      "rest api",
+      "sql",
+      "docker"
+    ],
+    "experience_years": 4,
+    "location": "Remote",
+    "resume_summary": "Experienced Python developer with 4 years building REST APIs and Django applications.",
+    "applied_date": "2026-03-16",
+    "status": "pending",
+    "matched_job_id": null,
+    "match_score": 0.0
+  },
+  {
+    "application_id": "APP002",
+    "applicant_name": "Bob Smith",
+    "email": "bob@example.com",
+    "skills": [
+      "python",
+      "machine learning",
+      "pandas",
+      "numpy",
+      "tensorflow"
+    ],
+    "experience_years": 5,
+    "location": "New York, NY",
+    "resume_summary": "Data scientist with 5 years of experience in ML model development and data analysis.",
+    "applied_date": "2026-03-16",
+    "status": "pending",
+    "matched_job_id": null,
+    "match_score": 0.0
+  },
+  {
+    "application_id": "APP003",
+    "applicant_name": "Carol White",
+    "email": "carol@example.com",
+    "skills": [
+      "javascript",
+      "react",
+      "node.js",
+      "css",
+      "html"
+    ],
+    "experience_years": 2,
+    "location": "San Francisco, CA",
+    "resume_summary": "Frontend-leaning full stack developer, strong React and Node.js skills.",
+    "applied_date": "2026-03-16",
+    "status": "pending",
+    "matched_job_id": null,
+    "match_score": 0.0
+  },
+  {
+    "application_id": "APP004",
+    "applicant_name": "David Lee",
+    "email": "david@example.com",
+    "skills": [
+      "python",
+      "sql",
+      "rest api"
+    ],
+    "experience_years": 1,
+    "location": "Remote",
+    "resume_summary": "Junior developer with Python and SQL knowledge seeking a backend role.",
+    "applied_date": "2026-03-16",
+    "status": "pending",
+    "matched_job_id": null,
+    "match_score": 0.0
+  },
+  {
+    "application_id": "APP005",
+    "applicant_name": "Eva Martinez",
+    "email": "eva@example.com",
+    "skills": [
+      "docker",
+      "kubernetes",
+      "ci/cd",
+      "linux",
+      "terraform",
+      "aws"
+    ],
+    "experience_years": 6,
+    "location": "Austin, TX",
+    "resume_summary": "Senior DevOps engineer with extensive Kubernetes and cloud infrastructure experience.",
+    "applied_date": "2026-03-16",
+    "status": "pending",
+    "matched_job_id": null,
+    "match_score": 0.0
+  }
+]

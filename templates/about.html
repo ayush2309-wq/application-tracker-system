@@ -1,0 +1,563 @@
+{% extends "base.html" %}
+{% block title %}About — Application Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-0"><i class="bi bi-info-circle me-2 text-primary"></i>About This System</h2>
+    <p class="text-muted mb-0">
+      Full architecture, technology stack, and algorithm details for the Application Tracker System
+    </p>
+  </div>
+</div>
+
+<!-- Overview cards -->
+<div class="row g-3 mb-5">
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100 text-center p-3">
+      <div class="stat-icon bg-primary-subtle text-primary mx-auto mb-3" style="width:3rem;height:3rem;font-size:1.5rem">
+        <i class="bi bi-server"></i>
+      </div>
+      <h6 class="fw-bold">Backend</h6>
+      <p class="text-muted small mb-0">Python 3 · Flask · Dataclasses · JSON storage · Rotating logger</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100 text-center p-3">
+      <div class="stat-icon bg-success-subtle text-success mx-auto mb-3" style="width:3rem;height:3rem;font-size:1.5rem">
+        <i class="bi bi-palette"></i>
+      </div>
+      <h6 class="fw-bold">Frontend</h6>
+      <p class="text-muted small mb-0">HTML5 · Jinja2 · Bootstrap 5 · Bootstrap Icons · Vanilla JS</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100 text-center p-3">
+      <div class="stat-icon bg-warning-subtle text-warning mx-auto mb-3" style="width:3rem;height:3rem;font-size:1.5rem">
+        <i class="bi bi-diagram-3"></i>
+      </div>
+      <h6 class="fw-bold">Algorithm</h6>
+      <p class="text-muted small mb-0">Weighted scoring · Skill-set overlap · Experience normalization</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BACKEND ===== -->
+<h4 class="fw-bold mb-3 border-bottom pb-2">
+  <i class="bi bi-server me-2 text-primary"></i>Backend Technologies
+</h4>
+
+<div class="row g-4 mb-5">
+
+  <!-- Python -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge bg-warning text-dark me-2 fs-6 px-3">Python 3.12</span>
+          <span class="text-muted small">Core language</span>
+        </div>
+        <p class="small mb-2">
+          All business logic is written in <strong>Python 3</strong>.
+          The codebase uses <code>dataclasses</code> to define the three core
+          domain objects — <code>JobRequirement</code>, <code>Application</code>,
+          and <code>MatchResult</code> — which gives typed, immutable-friendly
+          value objects without boilerplate.
+        </p>
+        <ul class="small text-muted mb-0">
+          <li><code>src/models.py</code> — data classes</li>
+          <li><code>src/matcher.py</code> — scoring engine</li>
+          <li><code>src/tracker.py</code> — orchestration</li>
+          <li><code>src/notifier.py</code> — notifications</li>
+          <li><code>src/logger.py</code> — logging setup</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flask -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge bg-dark me-2 fs-6 px-3">Flask 3</span>
+          <span class="text-muted small">Web framework</span>
+        </div>
+        <p class="small mb-2">
+          <strong>Flask</strong> is a lightweight WSGI micro-framework.
+          <code>app.py</code> defines all routes using Flask's
+          <code>@app.route</code> decorator. The Werkzeug WSGI toolkit
+          (bundled with Flask) handles HTTP parsing, while
+          <strong>Jinja2</strong> (also bundled) renders the templates.
+        </p>
+        <ul class="small text-muted mb-0">
+          <li>Routes: <code>GET/POST</code> for pages; <code>GET</code> for JSON API</li>
+          <li>Flash messages via <code>flask.flash</code></li>
+          <li>URL building via <code>flask.url_for</code></li>
+          <li>JSON responses via <code>flask.jsonify</code></li>
+          <li>Debug mode controlled by <code>FLASK_DEBUG</code> env var</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON storage -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge bg-info text-dark me-2 fs-6 px-3">JSON Files</span>
+          <span class="text-muted small">Data persistence</span>
+        </div>
+        <p class="small mb-2">
+          All data is stored as <strong>flat JSON files</strong> in the
+          <code>data/</code> directory — no external database required.
+          Python's built-in <code>json</code> module reads and writes these
+          files. The web layer serialises <code>dataclass</code> instances
+          via <code>__dict__</code>.
+        </p>
+        <ul class="small text-muted mb-0">
+          <li><code>data/job_requirements.json</code> — job postings</li>
+          <li><code>data/applications.json</code> — submitted applications</li>
+          <li><code>data/results.json</code> — cached match results (CLI)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logging -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge bg-secondary me-2 fs-6 px-3">logging</span>
+          <span class="text-muted small">Structured logging</span>
+        </div>
+        <p class="small mb-2">
+          Python's standard <strong><code>logging</code></strong> module with
+          <code>RotatingFileHandler</code> keeps the log directory lean.
+          A structured JSONL event log (<code>logs/events.jsonl</code>)
+          records each match event as a one-line JSON object for easy
+          machine processing.
+        </p>
+        <ul class="small text-muted mb-0">
+          <li><code>logs/tracker.log</code> — rotating human-readable log</li>
+          <li><code>logs/events.jsonl</code> — structured JSON event log</li>
+          <li>Max file size 1 MB · 5 backup files</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- REST API -->
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h6 class="mb-0 fw-semibold">
+          <i class="bi bi-braces me-2 text-primary"></i>REST API Endpoints (machine-readable backend output)
+        </h6>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0 small">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-3">Method</th>
+              <th>URL</th>
+              <th>Description</th>
+              <th>Try it</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ps-3"><span class="badge bg-success">GET</span></td>
+              <td><code>/api/results</code></td>
+              <td>All match results with full score breakdown per component</td>
+              <td><a href="/api/results" target="_blank" class="btn btn-sm btn-outline-primary py-0">Open</a></td>
+            </tr>
+            <tr>
+              <td class="ps-3"><span class="badge bg-success">GET</span></td>
+              <td><code>/api/jobs</code></td>
+              <td>All job postings as a JSON array</td>
+              <td><a href="/api/jobs" target="_blank" class="btn btn-sm btn-outline-primary py-0">Open</a></td>
+            </tr>
+            <tr>
+              <td class="ps-3"><span class="badge bg-success">GET</span></td>
+              <td><code>/api/applications</code></td>
+              <td>All applications as a JSON array</td>
+              <td><a href="/api/applications" target="_blank" class="btn btn-sm btn-outline-primary py-0">Open</a></td>
+            </tr>
+            <tr>
+              <td class="ps-3"><span class="badge bg-warning text-dark">POST</span></td>
+              <td><code>/results/run</code></td>
+              <td>Re-trigger matching; returns <code>{"status":"ok","count":N}</code></td>
+              <td class="text-muted">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FRONTEND ===== -->
+<h4 class="fw-bold mb-3 border-bottom pb-2">
+  <i class="bi bi-palette me-2 text-success"></i>Frontend Technologies
+</h4>
+
+<div class="row g-4 mb-5">
+
+  <!-- Jinja2 -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge bg-dark me-2 fs-6 px-3">Jinja2</span>
+          <span class="text-muted small">Server-side templating</span>
+        </div>
+        <p class="small mb-2">
+          <strong>Jinja2</strong> is Flask's built-in template engine.
+          Templates inherit from <code>templates/base.html</code> using
+          <code>{% raw %}{% extends %}{% endraw %}</code> /
+          <code>{% raw %}{% block %}{% endraw %}</code>.
+          Python objects (jobs, applications, results) are passed from
+          route handlers and rendered directly in HTML without any client-side
+          framework.
+        </p>
+        <ul class="small text-muted mb-0">
+          <li>Template inheritance — DRY shared layout</li>
+          <li>Filters: <code>|capitalize</code>, <code>|format</code>, <code>|length</code></li>
+          <li>Globals: custom <code>status_badge()</code> helper</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge" style="background:#7952b3;font-size:0.9rem" class="me-2 px-3">Bootstrap 5.3</span>
+          <span class="text-muted small ms-2">CSS framework</span>
+        </div>
+        <p class="small mb-2">
+          <strong>Bootstrap 5</strong> provides the responsive grid, utility
+          classes, card components, tables, badges, forms, and the collapsible
+          mobile navbar — all without jQuery.
+          Loaded via CDN with Subresource Integrity (SRI) hashes to prevent
+          supply-chain attacks.
+        </p>
+        <ul class="small text-muted mb-0">
+          <li>12-column responsive grid (<code>col-md-*</code>)</li>
+          <li>Utility classes: spacing, colour, flexbox</li>
+          <li>Components: cards, tables, badges, forms, alerts, navbar</li>
+          <li>Bootstrap Icons 1.11 — icon font via CDN</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vanilla JS -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge bg-warning text-dark me-2 fs-6 px-3">Vanilla JS</span>
+          <span class="text-muted small">Client-side interactivity</span>
+        </div>
+        <p class="small mb-2">
+          No JavaScript framework is used.
+          Plain <strong>ES2020 JavaScript</strong> handles:
+        </p>
+        <ul class="small text-muted mb-0">
+          <li>Live skill-badge preview on the Apply and Post Job forms</li>
+          <li>Status filter buttons on the Results page</li>
+          <li>Text search across applicant name + job title</li>
+          <li><code>fetch()</code> call to <code>POST /results/run</code> for async re-matching</li>
+          <li>Bootstrap bundle JS for navbar collapse and alert dismissal</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom CSS -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge bg-info text-dark me-2 fs-6 px-3">CSS3</span>
+          <span class="text-muted small">static/style.css</span>
+        </div>
+        <p class="small mb-2">
+          A small custom stylesheet extends Bootstrap with project-specific components:
+        </p>
+        <ul class="small text-muted mb-0">
+          <li><strong>Score bars</strong> — overlaid progress bar + label</li>
+          <li><strong>Stat cards</strong> — icon circles, large value text</li>
+          <li><strong>Job cards</strong> — hover lift animation</li>
+          <li><strong>Sticky footer</strong> — flex-column layout on <code>&lt;body&gt;</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pages map -->
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h6 class="mb-0 fw-semibold">
+          <i class="bi bi-layout-text-sidebar me-2 text-success"></i>Frontend Pages
+        </h6>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0 small">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-3">URL</th>
+              <th>Template</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ps-3"><a href="/">/</a></td>
+              <td><code>index.html</code></td>
+              <td>Dashboard — stat cards, best-match summary, open jobs table</td>
+            </tr>
+            <tr>
+              <td class="ps-3"><a href="/jobs">/jobs</a></td>
+              <td><code>jobs.html</code></td>
+              <td>Job listing — responsive card grid with skills and actions</td>
+            </tr>
+            <tr>
+              <td class="ps-3">/jobs/&lt;id&gt;</td>
+              <td><code>job_detail.html</code></td>
+              <td>Job detail — full requirements + ranked applicant table with score breakdown</td>
+            </tr>
+            <tr>
+              <td class="ps-3"><a href="/jobs/new">/jobs/new</a></td>
+              <td><code>new_job.html</code></td>
+              <td>Post job form — live skill-badge preview</td>
+            </tr>
+            <tr>
+              <td class="ps-3"><a href="/applications">/applications</a></td>
+              <td><code>applications.html</code></td>
+              <td>Application list — all submissions with skills and status</td>
+            </tr>
+            <tr>
+              <td class="ps-3"><a href="/applications/new">/applications/new</a></td>
+              <td><code>apply.html</code></td>
+              <td>Apply form — personal details, skills input, open-jobs sidebar</td>
+            </tr>
+            <tr>
+              <td class="ps-3"><a href="/results">/results</a></td>
+              <td><code>results.html</code></td>
+              <td>Match results — full component-score breakdown, filter, search, re-run</td>
+            </tr>
+            <tr>
+              <td class="ps-3"><a href="/about">/about</a></td>
+              <td><code>about.html</code></td>
+              <td>This page — full technology and algorithm documentation</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ALGORITHM ===== -->
+<h4 class="fw-bold mb-3 border-bottom pb-2">
+  <i class="bi bi-diagram-3 me-2 text-warning"></i>Matching Algorithm
+</h4>
+
+<div class="row g-4 mb-5">
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white py-3">
+        <h6 class="mb-0 fw-semibold">Scoring Formula</h6>
+      </div>
+      <div class="card-body">
+        <div class="p-3 bg-light rounded font-monospace small mb-3">
+          total_score =<br />
+          &nbsp;&nbsp;(req_skills_matched / req_skills_total) × <strong>0.60</strong><br />
+          + (pref_skills_matched / pref_skills_total) × <strong>0.20</strong><br />
+          + min(experience_years / min_experience_years, 1.0) × <strong>0.20</strong>
+        </div>
+        <table class="table table-sm table-bordered small mb-0">
+          <thead class="table-light text-center">
+            <tr>
+              <th>Component</th>
+              <th>Weight</th>
+              <th>Rationale</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge bg-danger-subtle text-danger">Required Skills</span></td>
+              <td class="text-center fw-bold">60 %</td>
+              <td>Must-have skills are the primary gate</td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-secondary-subtle text-secondary">Preferred Skills</span></td>
+              <td class="text-center fw-bold">20 %</td>
+              <td>Nice-to-have differentiators</td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-info-subtle text-info">Experience</span></td>
+              <td class="text-center fw-bold">20 %</td>
+              <td>Capped at 1.0 — seniority bonus, not penalty</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white py-3">
+        <h6 class="mb-0 fw-semibold">Status Thresholds</h6>
+      </div>
+      <div class="card-body">
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-success fs-6 px-3">Accepted</span>
+            <div class="flex-grow-1">
+              <div class="progress" style="height:10px">
+                <div class="progress-bar bg-success" style="width:100%"></div>
+              </div>
+            </div>
+            <span class="font-monospace small fw-bold">≥ 70 %</span>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-warning text-dark fs-6 px-3">Waitlisted</span>
+            <div class="flex-grow-1">
+              <div class="progress" style="height:10px">
+                <div class="progress-bar bg-warning" style="width:70%"></div>
+              </div>
+            </div>
+            <span class="font-monospace small fw-bold">45 – 69 %</span>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-danger fs-6 px-3">Rejected</span>
+            <div class="flex-grow-1">
+              <div class="progress" style="height:10px">
+                <div class="progress-bar bg-danger" style="width:45%"></div>
+              </div>
+            </div>
+            <span class="font-monospace small fw-bold">&lt; 45 %</span>
+          </div>
+        </div>
+        <hr />
+        <p class="small text-muted mb-1">
+          Thresholds are configurable in <code>config.json</code>:
+        </p>
+        <div class="bg-light rounded p-2 font-monospace small">
+{<br/>
+&nbsp;&nbsp;"accept_threshold":   0.70,<br/>
+&nbsp;&nbsp;"waitlist_threshold": 0.45<br/>
+}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h6 class="mb-0 fw-semibold">Algorithm Pipeline</h6>
+      </div>
+      <div class="card-body">
+        <div class="d-flex flex-wrap gap-2 align-items-center justify-content-center py-2">
+          <div class="pipeline-step bg-primary-subtle text-primary">
+            <i class="bi bi-file-earmark-arrow-up d-block fs-4 mb-1"></i>
+            Load JSON data
+          </div>
+          <i class="bi bi-arrow-right text-muted fs-4"></i>
+          <div class="pipeline-step bg-warning-subtle text-warning">
+            <i class="bi bi-cpu d-block fs-4 mb-1"></i>
+            Compute component scores
+          </div>
+          <i class="bi bi-arrow-right text-muted fs-4"></i>
+          <div class="pipeline-step bg-info-subtle text-info">
+            <i class="bi bi-calculator d-block fs-4 mb-1"></i>
+            Weighted sum → total score
+          </div>
+          <i class="bi bi-arrow-right text-muted fs-4"></i>
+          <div class="pipeline-step bg-secondary-subtle text-secondary">
+            <i class="bi bi-sort-down d-block fs-4 mb-1"></i>
+            Rank applicants per job
+          </div>
+          <i class="bi bi-arrow-right text-muted fs-4"></i>
+          <div class="pipeline-step bg-success-subtle text-success">
+            <i class="bi bi-check2-circle d-block fs-4 mb-1"></i>
+            Assign status &amp; notify
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TESTING ===== -->
+<h4 class="fw-bold mb-3 border-bottom pb-2">
+  <i class="bi bi-clipboard-check me-2 text-danger"></i>Testing
+</h4>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge bg-danger me-2 fs-6 px-3">pytest</span>
+          <span class="text-muted small">Unit test framework</span>
+        </div>
+        <p class="small mb-2">
+          The <code>tests/test_matcher.py</code> test suite covers the
+          matching engine with <strong>15 unit tests</strong> across four
+          test classes, using <code>pytest.fixture</code> for shared test
+          data.
+        </p>
+        <ul class="small text-muted mb-0">
+          <li><code>TestComputeMatchScore</code> — score range, edge cases</li>
+          <li><code>TestDetermineStatus</code> — threshold boundaries</li>
+          <li><code>TestMatchApplication</code> — multi-job matching, sort order</li>
+          <li><code>TestRankApplications</code> — ranking order, empty list</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h6 class="fw-semibold mb-2">Run the tests</h6>
+        <div class="bg-dark text-white rounded p-3 font-monospace small">
+          <span class="text-success">$</span> pip install -r requirements.txt<br />
+          <span class="text-success">$</span> pytest tests/ -v
+        </div>
+        <h6 class="fw-semibold mt-3 mb-2">Start the web UI</h6>
+        <div class="bg-dark text-white rounded p-3 font-monospace small">
+          <span class="text-success">$</span> python app.py<br />
+          <span class="text-info"># development (debug on):</span><br />
+          <span class="text-success">$</span> FLASK_DEBUG=true python app.py
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+  .pipeline-step {
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 120px;
+  }
+</style>
+{% endblock %}

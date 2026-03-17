@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}Match Results — Application Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="fw-bold mb-0"><i class="bi bi-bar-chart me-2 text-primary"></i>Match Results</h2>
+    <p class="text-muted mb-0">{{ total }} applicant–job pair{% if total != 1 %}s{% endif %} evaluated &mdash;
+      full score breakdown shown
+    </p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/api/results" target="_blank" class="btn btn-outline-secondary">
+      <i class="bi bi-braces me-1"></i>View JSON
+    </a>
+    <button class="btn btn-outline-primary" id="rerunBtn">
+      <i class="bi bi-arrow-clockwise me-1"></i>Re-run Matching
+    </button>
+  </div>
+</div>
+
+<!-- Scoring formula info banner -->
+<div class="alert alert-info d-flex align-items-start gap-3 mb-4 py-3">
+  <i class="bi bi-info-circle-fill fs-5 mt-1 flex-shrink-0"></i>
+  <div>
+    <strong>Scoring Formula (backend algorithm):</strong>
+    <span class="font-monospace ms-1">
+      Total&nbsp;=&nbsp;(Required&nbsp;Skills&nbsp;×&nbsp;60%)&nbsp;+&nbsp;(Preferred&nbsp;Skills&nbsp;×&nbsp;20%)&nbsp;+&nbsp;(Experience&nbsp;×&nbsp;20%)
+    </span>
+    <span class="ms-3 text-success fw-semibold">≥ 70% → Accepted</span>
+    <span class="ms-2 text-warning fw-semibold">45–69% → Waitlisted</span>
+    <span class="ms-2 text-danger fw-semibold">&lt; 45% → Rejected</span>
+  </div>
+</div>
+
+<!-- Filter bar -->
+<div class="card border-0 shadow-sm mb-3">
+  <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
+    <span class="text-muted small me-1"><i class="bi bi-funnel me-1"></i>Filter:</span>
+    <button class="btn btn-sm btn-outline-secondary filter-btn active" data-status="all">All</button>
+    <button class="btn btn-sm btn-outline-success filter-btn" data-status="accepted">Accepted</button>
+    <button class="btn btn-sm btn-outline-warning filter-btn" data-status="waitlisted">Waitlisted</button>
+    <button class="btn btn-sm btn-outline-danger filter-btn" data-status="rejected">Rejected</button>
+    <div class="ms-auto">
+      <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Search applicant or job…" style="min-width:220px">
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="resultsTable">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3">Applicant</th>
+            <th>Job</th>
+            <th class="text-center" style="min-width:100px">
+              Total<br /><span class="fw-normal text-muted" style="font-size:0.65rem">100%</span>
+            </th>
+            <th class="text-center" style="min-width:100px">
+              Required<br /><span class="fw-normal text-muted" style="font-size:0.65rem">60% weight</span>
+            </th>
+            <th class="text-center" style="min-width:100px">
+              Preferred<br /><span class="fw-normal text-muted" style="font-size:0.65rem">20% weight</span>
+            </th>
+            <th class="text-center" style="min-width:100px">
+              Experience<br /><span class="fw-normal text-muted" style="font-size:0.65rem">20% weight</span>
+            </th>
+            <th>Required Skills</th>
+            <th>Preferred Skills</th>
+            <th class="text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in results %}
+          <tr data-status="{{ r.status }}" data-search="{{ r.applicant_name|lower }} {{ r.job_title|lower }}">
+            <td class="ps-3">
+              <div class="fw-medium">{{ r.applicant_name }}</div>
+              <div class="text-muted font-monospace" style="font-size:0.7rem">{{ r.application_id }}</div>
+            </td>
+            <td>
+              <a href="{{ url_for('job_detail', job_id=r.job_id) }}" class="text-decoration-none fw-medium">
+                {{ r.job_title }}
+              </a>
+              <div class="text-muted small">{{ r.company }}</div>
+            </td>
+            <!-- Total score -->
+            <td class="text-center">
+              <div class="score-bar-wrap mx-auto">
+                <div class="score-bar bg-{{ status_badge(r.status) }}" style="width:{{ (r.match_score * 100)|int }}%"></div>
+                <span class="score-label fw-bold">{{ "%.0f"|format(r.match_score * 100) }}%</span>
+              </div>
+            </td>
+            <!-- Required skills score -->
+            <td class="text-center">
+              <div class="score-bar-wrap mx-auto">
+                <div class="score-bar bg-danger" style="width:{{ (r.req_score * 100)|int }}%; opacity:0.65"></div>
+                <span class="score-label">{{ "%.0f"|format(r.req_score * 100) }}%</span>
+              </div>
+            </td>
+            <!-- Preferred skills score -->
+            <td class="text-center">
+              <div class="score-bar-wrap mx-auto">
+                <div class="score-bar bg-secondary" style="width:{{ (r.pref_score * 100)|int }}%; opacity:0.65"></div>
+                <span class="score-label">{{ "%.0f"|format(r.pref_score * 100) }}%</span>
+              </div>
+            </td>
+            <!-- Experience score -->
+            <td class="text-center">
+              <div class="score-bar-wrap mx-auto">
+                <div class="score-bar bg-info" style="width:{{ (r.exp_score * 100)|int }}%; opacity:0.65"></div>
+                <span class="score-label">{{ "%.0f"|format(r.exp_score * 100) }}%</span>
+              </div>
+            </td>
+            <!-- Required skill badges -->
+            <td>
+              {% for s in r.matched_skills %}
+                <span class="badge bg-success-subtle text-success me-1">{{ s }}</span>
+              {% endfor %}
+              {% for s in r.missing_skills %}
+                <span class="badge bg-danger-subtle text-danger me-1"><s>{{ s }}</s></span>
+              {% endfor %}
+              {% if not r.matched_skills and not r.missing_skills %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+            <!-- Preferred skill badges -->
+            <td>
+              {% for s in r.preferred_matched %}
+                <span class="badge bg-success-subtle text-success me-1">{{ s }}</span>
+              {% endfor %}
+              {% for s in r.preferred_missing %}
+                <span class="badge bg-secondary-subtle text-secondary me-1"><s>{{ s }}</s></span>
+              {% endfor %}
+              {% if not r.preferred_matched and not r.preferred_missing %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+            <td class="text-center">
+              <span class="badge bg-{{ status_badge(r.status) }}">{{ r.status|capitalize }}</span>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="9" class="text-center py-5 text-muted">
+              <i class="bi bi-inbox display-5 d-block mb-2 opacity-25"></i>
+              No results yet. Submit applications and jobs first.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="text-muted small mt-2">
+  <i class="bi bi-braces me-1"></i>
+  Full backend JSON output available at
+  <a href="/api/results" target="_blank">/api/results</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Status filter
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  // Search filter
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+  function applyFilters() {
+    const status = document.querySelector('.filter-btn.active').dataset.status;
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('#resultsTable tbody tr[data-status]').forEach(row => {
+      const matchStatus = status === 'all' || row.dataset.status === status;
+      const matchSearch = !q || row.dataset.search.includes(q);
+      row.style.display = (matchStatus && matchSearch) ? '' : 'none';
+    });
+  }
+
+  // Re-run matching
+  document.getElementById('rerunBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('rerunBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Running…';
+    try {
+      const res = await fetch('/results/run', { method: 'POST' });
+      const data = await res.json();
+      if (data.status === 'ok') {
+        window.location.reload();
+      }
+    } catch (e) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i>Re-run Matching';
+      alert('Matching failed. Please try again.');
+    }
+  });
+</script>
+{% endblock %}

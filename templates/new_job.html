@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Post a Job — Application Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('jobs') }}">Jobs</a></li>
+        <li class="breadcrumb-item active">Post a Job</li>
+      </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h4 class="mb-0 fw-bold">
+          <i class="bi bi-briefcase-fill me-2 text-primary"></i>Post a New Job
+        </h4>
+        <p class="text-muted mb-0 small mt-1">Fill in the role details; applicants will be matched automatically.</p>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('new_job') }}" novalidate>
+          <h6 class="text-uppercase text-muted small fw-semibold mb-3 border-bottom pb-2">Role Details</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+              <label class="form-label fw-medium" for="title">Job Title <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="title" name="title"
+                     placeholder="e.g. Python Backend Developer" required />
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-medium" for="company">Company <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="company" name="company"
+                     placeholder="e.g. TechCorp Inc." required />
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-medium" for="location">Location</label>
+              <input type="text" class="form-control" id="location" name="location"
+                     placeholder="e.g. Remote, New York, NY" />
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-medium" for="min_experience_years">Min. Experience (years)</label>
+              <input type="number" class="form-control" id="min_experience_years" name="min_experience_years"
+                     min="0" max="30" value="0" />
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-medium" for="description">Job Description</label>
+              <textarea class="form-control" id="description" name="description" rows="3"
+                        placeholder="Describe the responsibilities and expectations…"></textarea>
+            </div>
+          </div>
+
+          <h6 class="text-uppercase text-muted small fw-semibold mb-3 border-bottom pb-2">Skills</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-12">
+              <label class="form-label fw-medium" for="required_skills">
+                Required Skills <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="required_skills" name="required_skills"
+                     placeholder="e.g. python, django, sql, rest api" required />
+              <div class="form-text">Comma-separated; used for primary matching (60% weight).</div>
+              <div id="req-preview" class="mt-2 d-flex flex-wrap gap-1"></div>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-medium" for="preferred_skills">Preferred Skills</label>
+              <input type="text" class="form-control" id="preferred_skills" name="preferred_skills"
+                     placeholder="e.g. docker, aws, redis" />
+              <div class="form-text">Comma-separated; used for secondary matching (20% weight).</div>
+              <div id="pref-preview" class="mt-2 d-flex flex-wrap gap-1"></div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary px-4">
+              <i class="bi bi-briefcase me-1"></i>Post Job
+            </button>
+            <a href="{{ url_for('jobs') }}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function makePreview(inputId, previewId, badgeClass) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    input.addEventListener('input', () => {
+      const skills = input.value.split(',').map(s => s.trim()).filter(Boolean);
+      preview.innerHTML = skills
+        .map(s => `<span class="badge ${badgeClass}">${s}</span>`)
+        .join('');
+    });
+  }
+  makePreview('required_skills',  'req-preview',  'bg-danger-subtle text-danger');
+  makePreview('preferred_skills', 'pref-preview', 'bg-secondary-subtle text-secondary');
+</script>
+{% endblock %}
